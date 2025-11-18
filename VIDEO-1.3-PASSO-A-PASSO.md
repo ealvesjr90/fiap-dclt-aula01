@@ -565,11 +565,19 @@ kubectl create namespace jenkins
 # 3. Instalar Jenkins com valores customizados
 helm install jenkins jenkins/jenkins \
   --namespace jenkins \
-  --values jenkins/jenkins-values.yaml \
-  --wait
+  --values jenkins/jenkins-values.yaml
 
+# Nota: Removemos --wait para evitar timeout
 # Tempo de instalação: 2-3 minutos
 ```
+
+**⚠️ Importante - AWS Learner Lab:**
+- ❌ **PersistentVolumeClaims não funcionam** (sem EBS CSI driver)
+- ✅ **Solução:** `persistence.enabled: false` (usa emptyDir)
+- ⚠️ **Atenção:** Dados serão perdidos se o pod for deletado
+- 💡 **Para produção:** Use EKS com EBS CSI driver instalado
+
+```bash
 
 **Ver arquivo de configuração:**
 ```bash
@@ -579,19 +587,21 @@ cat jenkins/jenkins-values.yaml
 **Conteúdo do `jenkins-values.yaml`:**
 ```yaml
 controller:
-  adminUser: "admin"
-  adminPassword: "fiap123456"
+  admin:
+    username: "admin"
+    password: "fiap123456"
   
   # Expor via LoadBalancer
   serviceType: LoadBalancer
   
-  # Plugins essenciais
+  # Plugins essenciais (usar latest para evitar conflitos)
   installPlugins:
-    - kubernetes:4000.v7be6b_0c9da_d3
-    - workflow-aggregator:596.v8c21c963d92d
-    - git:5.0.0
-    - configuration-as-code:1670.v564dc8b_982d0
-    - nodejs:1.6.1
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - configuration-as-code:latest
+    - nodejs:latest
+    - ws-cleanup:latest
     
   # Configuração como código
   JCasC:
@@ -621,20 +631,32 @@ agent:
       cpu: "500m"
       memory: "1Gi"
 
-# Persistência
+# Persistência (desabilitada para AWS Learner Lab)
 persistence:
-  enabled: true
-  size: "10Gi"
+  enabled: false
+  # No AWS Learner Lab, não temos acesso ao EBS CSI driver
+  # Usar emptyDir (dados serão perdidos se o pod for deletado)
 ```
 
 **Acompanhar instalação:**
 ```bash
-# Ver pods
+# 1. Ver pods (aguardar ficar 2/2 Ready)
 kubectl get pods -n jenkins -w
 
-# Aguardar pod jenkins-0 ficar Running
+# Resultado esperado:
 # NAME        READY   STATUS    RESTARTS   AGE
 # jenkins-0   2/2     Running   0          2m
+
+# 2. Ver serviços (obter URL do LoadBalancer)
+kubectl get svc -n jenkins
+
+# 3. Obter URL do Jenkins
+export JENKINS_URL=$(kubectl get svc jenkins -n jenkins -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+echo "Jenkins URL: http://$JENKINS_URL:8080"
+
+# Credenciais:
+# Username: admin
+# Password: fiap123456
 ```
 
 ### Passo 9: Acessar Jenkins

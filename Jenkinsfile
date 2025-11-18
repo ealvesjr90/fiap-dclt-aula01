@@ -11,17 +11,6 @@ spec:
     command:
     - cat
     tty: true
-  - name: docker
-    image: docker:24-dind
-    securityContext:
-      privileged: true
-    volumeMounts:
-    - name: docker-sock
-      mountPath: /var/run/docker.sock
-  volumes:
-  - name: docker-sock
-    hostPath:
-      path: /var/run/docker.sock
 """
         }
     }

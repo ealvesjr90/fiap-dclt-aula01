@@ -1,15 +1,17 @@
 controller:
-  adminUser: "admin"
-  adminPassword: "fiap123456"
+  admin:
+    username: "admin"
+    password: "fiap123456"
   
   serviceType: LoadBalancer
   
   installPlugins:
-    - kubernetes:4000.v7be6b_0c9da_d3
-    - workflow-aggregator:596.v8c21c963d92d
-    - git:5.0.0
-    - configuration-as-code:1670.v564dc8b_982d0
-    - nodejs:1.6.1
+    - kubernetes:latest
+    - workflow-aggregator:latest
+    - git:latest
+    - configuration-as-code:latest
+    - nodejs:latest
+    - ws-cleanup:latest
     
   JCasC:
     defaultConfig: true
@@ -37,5 +39,6 @@ agent:
       memory: "1Gi"
 
 persistence:
-  enabled: true
-  size: "10Gi"
+  enabled: false
+  # No AWS Learner Lab, não temos acesso ao EBS CSI driver
+  # Usar emptyDir (dados serão perdidos se o pod for deletado)
