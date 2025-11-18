@@ -456,14 +456,12 @@ aws eks update-kubeconfig \
   --profile fiapaws
 
 # 4. Criar Node Group
-# Converter subnets para array
-SUBNET_ARRAY=(${SUBNETS//,/ })
-
+# Converter subnets separadas por vírgula para espaço
 aws eks create-nodegroup \
   --cluster-name cicd-lab \
   --nodegroup-name workers \
   --node-role arn:aws:iam::${ACCOUNT_ID}:role/LabRole \
-  --subnets ${SUBNET_ARRAY[@]} \
+  --subnets $(echo $SUBNETS | tr ',' ' ') \
   --instance-types t3.medium \
   --scaling-config minSize=2,maxSize=2,desiredSize=2 \
   --region us-east-1 \
@@ -521,13 +519,14 @@ aws eks update-kubeconfig `
   --profile fiapaws
 
 # 4. Criar Node Group
-$SUBNET_ARRAY = $SUBNETS_RAW -split "\t"
+# Converter subnets para array PowerShell
+$SUBNET_LIST = ($SUBNETS_RAW -split "\t") -join " "
 
 aws eks create-nodegroup `
   --cluster-name cicd-lab `
   --nodegroup-name workers `
   --node-role "arn:aws:iam::${ACCOUNT_ID}:role/LabRole" `
-  --subnets $SUBNET_ARRAY `
+  --subnets $SUBNET_LIST.Split() `
   --instance-types t3.medium `
   --scaling-config minSize=2,maxSize=2,desiredSize=2 `
   --region us-east-1 `
