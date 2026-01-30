@@ -27,16 +27,16 @@ jobs:
           cache-dependency-path: app/package-lock.json
       
       # Passo 3: Instalar dependências
-      - name: 📦 Instalar dependências
+      - name: 📦 Instalar dependências do sistema
         working-directory: app
         run: npm ci
       
-      # Passo 4: Executar testes 55
+      # Passo 4: Executar testes
       - name: 🧪 Executar testes
         working-directory: app
         run: npm test
       
-      # Passo 5: Executar lint (análise de código basico)
+      # Passo 5: Executar lint (análise de código)
       - name: 🔍 Lint
         working-directory: app
         run: npm run lint --if-present
