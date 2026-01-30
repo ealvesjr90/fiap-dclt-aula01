@@ -31,13 +31,13 @@ jobs:
         working-directory: app
         run: npm ci
       
-      # Passo 4: Executar testes
+      # Passo 4: Executar testes 5
       - name: 🧪 Executar testes
         working-directory: app
         run: npm test
       
-      # Passo 5: Executar lint (análise de código)
+      # Passo 5: Executar lint (análise de código basico)
       - name: 🔍 Lint
         working-directory: app
         run: npm run lint --if-present
-        teste
+        
