@@ -40,3 +40,4 @@ jobs:
       - name: 🔍 Lint
         working-directory: app
         run: npm run lint --if-present
+        teste
