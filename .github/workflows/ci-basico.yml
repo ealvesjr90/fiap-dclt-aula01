@@ -31,7 +31,7 @@ jobs:
         working-directory: app
         run: npm ci
       
-      # Passo 4: Executar testes 5
+      # Passo 4: Executar testes 55
       - name: 🧪 Executar testes
         working-directory: app
         run: npm test
